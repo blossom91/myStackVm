@@ -1,0 +1,40 @@
+push
+2
+push
+1
+// pop 栈顶两个元素进行比较，比较顺序是 second -- top
+// 比较结果 push 到栈顶，
+    // 2 代表大于
+    // 1 代表等于
+    // 0 代表小于
+compare
+
+
+// 把 jump_if_great 要使用的地址 push 到栈顶，
+// 现在是写死的数字，指向 【在 (1, 1) 画点】
+// 数字地址是汇编代码写完后数出来的
+push
+14
+// pop 出 比较结果 和 地址，
+// 如果比较结果是大于，就跳转到指定的地址
+jump_if_great
+
+
+// 在 (0, 0) 画点
+push
+51200
+push
+200
+save_to_memory
+
+halt
+
+
+// 在 (1, 1) 画点
+push
+51211
+push
+200
+save_to_memory
+
+halt

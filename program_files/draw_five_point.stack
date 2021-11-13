@@ -1,0 +1,105 @@
+// 把显存起始地址 push 到 operand stack
+push
+51200
+// 把偏移 push 到 operand stack，
+// 现在是 0，指向显存第一个位置
+push
+0
+
+// 把 operand stack 的栈顶两个元素 pop 出来
+// 相加
+// 结果 push 回 operand stack
+add
+
+// 把要放到内存里的值 push 到 operand stack
+push
+200
+
+// 现在
+// operand stack 栈顶是值 200，
+// 第二个元素是地址 51200
+// save_to_memory 会把栈顶两个元素 pop 出来
+// 把值存到内存里对应地址的位置
+// 对应屏幕 (0, 0) 的显存位置就存入了大于 0 的值
+// 屏幕会在这个点输出颜色
+save_to_memory
+
+// 接下来是
+// (1, 1)
+// (2, 2)
+// (3, 3)
+// (4, 4)
+// 同理
+
+
+// (1, 1)
+push
+51200
+// 偏移为 11，因为屏幕是 10*10，所以会画在上一个点的右下方
+push
+11
+add
+
+push
+200
+save_to_memory
+
+
+
+// (2, 2)
+push
+51200
+// 加两次 11
+push
+11
+add
+push
+11
+add
+
+push
+200
+save_to_memory
+
+
+
+// (3, 3)
+push
+51200
+push
+11
+add
+push
+11
+add
+push
+11
+add
+
+push
+200
+save_to_memory
+
+
+// (4, 4)
+push
+51200
+push
+11
+add
+push
+11
+add
+push
+11
+add
+push
+11
+add
+
+push
+200
+save_to_memory
+
+
+halt

@@ -1,0 +1,60 @@
+
+.var i 0
+.var address 51200
+
+.while i < 4
+    .var_to_operand_stack address
+    push
+    200
+    save_to_memory
+
+    // 用来给 i 和 address ++ 的量
+    .var increment 1
+    .var address_increment 11
+
+    .add address address_increment address
+    .add i increment i
+
+    // 在 while 块结束的时候，会把在当前块内定义的变量都 pop 掉
+.while_end
+
+halt
+
+//    伪指令展开的解释
+
+//    #while_start
+//        // condition 判断，选择执行 while 块内容还是结束 while
+//        push
+//        {变量 i 在 variable stack 的 offset}
+//        load_from_variable_stack
+//        push
+//        4
+//        compare
+//
+//        // 如果条件满足
+//        push
+//        @do
+//        jump_if_less
+//
+//        // 不满足
+//        push
+//        @while_end
+//        jump
+//    #do
+//        .var_to_operand_stack address
+//        push
+//        200
+//        save_to_memory
+//
+//        .var increment 1
+//        .var address_increment 11
+//
+//        .add address address_increment address
+//        .add i increment i
+//
+//        // while 的 body 最后，还需要加上跳转回 while 起始地方的指令
+//        push
+//        @while_start
+//        jump
+//
+//    #while_end

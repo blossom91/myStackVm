@@ -1,0 +1,37 @@
+push
+@main
+jump
+
+
+.function add1 a b
+    // 参数会都从 parameter stack 中 pop 到 variable stack 里
+
+    .var c 0
+    .add a b c
+    .return c
+
+    // .return c
+    // --------- 展开
+    //    c 会从 variable stack 里复制出来，push 到 return value stack 里
+    //
+    //    函数内新增的所有变量，a、b、c 都从 variable stack 里 pop 掉
+    //
+    //    最后 exit
+
+.function_end
+
+
+#main
+    .var a 51199
+    .var b 1
+
+    // 把参数都 push 到 parameter stack，然后执行 subroutine_call 指令
+    .call add1 a b
+
+    // 返回值在 return value stack 里，现在 pop 出来
+    pop_return_value_stack
+
+    push
+    200
+    save_to_memory
+    halt

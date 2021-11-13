@@ -1,0 +1,57 @@
+// 先前对 variable stack 的存取都需要自己记住变量在栈里的偏移
+// 变量 -> 偏移 的转换工作可以让汇编器来
+
+
+// 新增 .var 伪指令，
+// 汇编器新增 vars 记录跟踪变量在 variable stack 里的偏移
+
+// 汇编器翻译到伪指令之前
+// vars: {}
+.var a 51199
+// 之后
+// vars: {a:0}
+// ----- 伪指令展开
+//    push
+//    51199
+//    push_variable_stack
+
+
+.var b 1
+// vars: {a:1, b:0}
+.var c 0
+// vars: {a:2, b:1, c:0}
+
+
+// c = a + b
+.add a b c
+// ----- 伪指令展开
+//    // 取出 a，
+//    push
+//    2     // a 在 variable stack 里的偏移从 vars 的记录中获得
+//    load_from_variable_stack
+//
+//    // 取出 b，一样
+//    push
+//    1
+//    load_from_variable_stack
+//
+//    // 相加
+//    add
+//
+//    // 覆盖 c
+//    push
+//    0
+//    save_to_variable_stack
+
+.var_to_operand_stack c
+// ----- 伪指令展开
+//    push
+//    0
+//    load_from_variable_stack
+
+// c 是 51200，应该在 (0, 0) 画点
+push
+200
+save_to_memory
+
+halt

@@ -1,0 +1,45 @@
+
+.var i 1
+.if i > 0
+    .var address 51200
+    .var color 200
+    .var_to_operand_stack address
+    .var_to_operand_stack color
+    save_to_memory
+
+    // 在 if 块结束的时候，会把在当前块内定义的变量都 pop 掉
+.if_end
+
+halt
+
+
+//    伪指令展开的解释
+
+//    ---------------- 展开
+//    #if
+//        // condition 判断，选择是否执行 if 块里的内容
+//        push
+//        {变量 i 在 variable stack 里的 offset}
+//        load_from_variable_stack
+//        push
+//        0
+//        compare
+//
+//        // 如果大于，跳转去执行 if 块里的代码
+//        push
+//        @then
+//        jump_if_great
+//
+//        // 否则，跳过这个 if
+//        push
+//        @endif
+//        jump
+//
+//    #then
+//        .var address 51200
+//        .var color 200
+//        .var_to_operand_stack address
+//        .var_to_operand_stack color
+//        save_to_memory
+//
+//    #endif

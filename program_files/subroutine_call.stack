@@ -1,0 +1,39 @@
+// 虚拟机新增一个 return stack 来支持过程调用，用法往下看
+
+// 汇编器会把 @main 换成 #main 所在的地址
+push
+@main
+// 跳转到 main 执行
+jump
+
+
+#subroutine_add1
+    // 两个参数在调用这个子过程之前就 push 在 operand stack 上了
+    add
+    // 结果放在 operand stack 上，相当于是返回值
+
+    // 执行 exit 指令，从 return stack 中 pop 出返回地址，加载到 pa
+    exit
+
+
+#main
+    // push 两个值到 operand，相当于 subroutine_add1 的参数
+    push
+    51199
+    push
+    1
+
+    // 调用子过程，前面 push 到 operand 里的两个值就当作它的参数
+    push
+    @subroutine_add1
+    // 执行 subroutine_call，虚拟机先把 pa 存到 return stack，然后跳转到子过程地址
+    subroutine_call
+
+    // 现在 operand stack 栈顶存储着返回值
+    // 应该是 51200
+    // 检验返回值，画点应该在 (0, 0)
+    push
+    200
+    save_to_memory
+
+halt

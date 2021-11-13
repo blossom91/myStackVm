@@ -1,0 +1,66 @@
+// 虚拟机新增 variable stack 用于存放变量，维持状态
+// 用法看例子
+
+
+// a = 51199
+push
+51199
+push_variable_stack
+// 最后一个元素是栈顶
+// variable stack: [51199]
+
+// b = 1
+push
+1
+push_variable_stack
+// variable stack: [51199, 1]
+
+// c = 0
+push
+0
+push_variable_stack
+// variable stack: [51199, 1, 0]
+
+// 接下来实现 c = a + b
+
+
+// a 距离 variable stack 栈顶的偏移是 2
+push
+2
+// 复制 a 出来到 operand stack
+load_from_variable_stack
+
+
+// b 距离 variable stack 栈顶的偏移是 1
+push
+1
+// 复制 b 出来到 operand stack
+load_from_variable_stack
+
+
+// 两个值相加
+add
+
+
+// c 距离 variable stack 栈顶的偏移是 0
+push
+0
+// 把 operand stack 的栈顶 pop 出来，
+// 复制到 variable stack 的相应偏移处
+save_to_variable_stack
+// variable stack: [51199, 1, 51200]
+
+// 也就是 c = a + b
+// c 现在等于 51200
+
+// 把 c 取出来，
+push
+0
+load_from_variable_stack
+
+push
+200
+// address 是 c，value 是 200，所以在 (0, 0) 画一个点
+save_to_memory
+
+halt

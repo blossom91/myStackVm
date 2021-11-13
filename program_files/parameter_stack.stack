@@ -1,0 +1,43 @@
+// 虚拟机新增一个 parameter stack 代替 operand stack 用来给过程调用传参数，用法看例子
+
+// 跳转到 main 执行
+push
+@main
+jump
+
+
+#subroutine_add1
+    // pop 两个参数，push 到 operand stack
+    pop_parameter_stack
+    pop_parameter_stack
+
+    add
+    // 结果放在 operand stack 上，相当于是返回值
+
+    // 从 return stack 中 pop 出返回地址，加载到 pa
+    exit
+
+
+#main
+    // push 两个值到 operand stack
+    push
+    51199
+    push
+    1
+    // 从 operand stack pop 出来，push 到 parameter stack 作为参数
+    push_parameter_stack
+    push_parameter_stack
+
+    // 调用子过程，参数在 parameter stack 里
+    push
+    @subroutine_add1
+    subroutine_call
+
+    // 现在 operand stack 栈顶相当于是返回值
+    // 应该是 51200
+    // 检验返回值，画点应该在 (0, 0)
+    push
+    200
+    save_to_memory
+
+halt

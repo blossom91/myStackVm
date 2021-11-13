@@ -1,0 +1,44 @@
+// 虚拟机新增一个 return value stack 代替 operand stack 用来给存放过程返回值，用法看例子
+
+// 跳转到 main 执行
+push
+@main
+jump
+
+
+#subroutine_add1
+    // pop 两个参数到 operand stack
+    pop_parameter_stack
+    pop_parameter_stack
+
+    add
+    // 结果从 operand stack 里 pop 出来，push 到 return value stack
+    push_return_value_stack
+
+    exit
+
+
+#main
+    // push 两个值到 operand stack
+    push
+    51199
+    push
+    1
+    // 两个值都 push 到 parameter stack 作为参数
+    push_parameter_stack
+    push_parameter_stack
+
+    // 调用子过程，参数在 parameter stack 里
+    push
+    @subroutine_add1
+    subroutine_call
+
+    // 返回值从 return value stack 里 pop 出来，push 到 operand stack
+    pop_return_value_stack
+    // 返回值应该是 51200
+    // 检验返回值，画点应该在 (0, 0)
+    push
+    200
+    save_to_memory
+
+halt

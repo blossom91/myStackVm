@@ -1,0 +1,123 @@
+//        汇编器的作用域 (vars) 和我们之前写解释器的 vars 的区别
+//            1 解释器的作用域 (vars) 是代码运行的时候，虚拟机维护的，
+//                管理的是运行时的变量状态，
+//
+//            2 汇编器的作用域 (vars) 只在代码编译的时候维护，
+//                为的是维护变量的偏移，把变量使用翻译成汇编，
+//                翻译的时候不知道运行时的情况，
+//
+//            所以解释器的作用域可以由程序执行的顺序来增长，
+//
+//            而汇编器的作用域更新只能通过扫描代码文件，
+//
+//            举例
+//    0
+//    1            def func1() {
+//    2                def func2() {
+//    3                }
+//    4            }
+//    5
+//    6            def main() {
+//    7                func1()
+//    8            }
+//    9
+//    10           main()
+//
+//            作用域的增长，解释器 (按代码执行顺序变化)
+//                9 行，执行 main 之前，（global 表示全局作用域）
+//                    [{global}]
+//
+//                6 行，进入 main
+//                    [{global}, {main}]
+//
+//                1 行，进入 func1
+//                    [{global}, {main}, {func1}]
+//
+//                在 func1 里定义 func2 并会不执行 func2，
+//                    所以也不会进入 func2 的作用域
+//
+//                退出 func1
+//                    [{global}, {main}]
+//
+//                退出 main
+//                    [{global}]
+//
+//
+//            作用域的增长，汇编器 (通过扫描文件，假设就从上到下扫描)
+//                0 行，扫描到 func1 定义之前
+//                    [{global}]
+//
+//                1 行，扫描到 func1 定义
+//                    [{global}, {func1}]
+//
+//                2-3 行，扫描到 func2 定义
+//                    [{global}, {func1}, {func2}]
+//
+//                4 行，结束扫描 func2 定义
+//                    [{global}, {func1}]
+//
+//                5 结束扫描 func1 定义
+//                    [{global}]
+//
+//                扫描到 main 定义
+//                    [{global}, {main}]
+//
+//                7 行，汇编器只做翻译工作不运行代码，不会跳转，所以还是在 main 作用域
+//                    [{global}, {main}]
+//
+//                结束扫描 main 定义
+//                    [{global}]
+
+// 所以汇编器的作用域增长，依据的是函数的定义
+
+// 接下来就用汇编伪指令写一个
+//    def func1() {
+//        def func2() {
+//        }
+//
+//        func2()
+//    }
+
+
+
+push
+@main
+jump
+
+
+.function draw_point_at_0_0
+    .var a 51200
+
+    push
+    @内部函数定义之后
+    jump
+
+    // 内部函数定义
+    .function draw_point_at_1_1
+        .var b 51211
+        // b 是 51211，所以在 (1, 1) 画点
+        .var_to_operand_stack b
+        push
+        200
+        save_to_memory
+
+        .return
+    .function_end
+
+    #内部函数定义之后
+    .call draw_point_at_1_1
+
+    // a 是 51200，所以在 (0, 0) 画点
+    .var_to_operand_stack a
+    push
+    200
+    save_to_memory
+
+    .return
+.function_end
+
+
+#main
+
+    .call draw_point_at_0_0
+    halt

@@ -1,0 +1,25 @@
+// 这是注释
+// push 数字 51200 到 operand stack
+push
+51200
+// operand stack: [51200, ]
+
+// push 数字 200 到 operand stack
+push
+200
+// operand stack: [51200, 200]
+// 200 是栈顶
+
+// 现在
+// operand stack 栈顶 200 作为值，
+// 第二个元素 51200 作为地址，
+// save_to_memory 会把栈顶两个元素 pop 出来
+// 把值存到内存里对应地址的位置
+save_to_memory
+
+// 因为 51200 是规定的显存起始位置
+// 所以对应屏幕 (0, 0) 的显存位置就存入了大于 0 的值
+// 屏幕就会在 (0, 0) 输出某种颜色
+
+// 虚拟机停机
+halt
